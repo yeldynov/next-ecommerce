@@ -46,14 +46,11 @@ const NavIcons = () => {
         height={22}
         className="cursor-pointer"
       />
-      <div className="cursor-pointer">
-        <Image
-          src="/cart.png"
-          alt=""
-          width={22}
-          height={22}
-          onClick={() => setIsCartOpen((prev) => !prev)}
-        />
+      <div
+        className="cursor-pointer"
+        onClick={() => setIsCartOpen((prev) => !prev)}
+      >
+        <Image src="/cart.png" alt="" width={22} height={22} />
         <div className="absolute -right-4 -top-4 flex h-6 w-6 items-center justify-center rounded-full bg-softRed text-sm text-white">
           2
         </div>
