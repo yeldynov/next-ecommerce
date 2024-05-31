@@ -1,12 +1,20 @@
 "use client";
 
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ChangeEvent } from "react";
 
 const Filter = () => {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const { replace } = useRouter();
+
   function handleFilterChange(
-    event: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ): void {
-    console.log("Not implemented.");
+    const { name, value } = e.target;
+    const params = new URLSearchParams(searchParams);
+    params.set(name, value);
+    replace(`${pathname}?${params.toString()}`);
   }
 
   return (
@@ -36,15 +44,14 @@ const Filter = () => {
           className="w-24 rounded-2xl pl-2 text-xs ring-1 ring-gray-400"
           onChange={handleFilterChange}
         />
-        {/* TODO: Filter Categories */}
         <select
           name="cat"
           className="rounded-2xl bg-[#EBEDED] px-4 py-2 text-xs font-medium"
           onChange={handleFilterChange}
         >
           <option>Category</option>
-          <option value="">New Arrival</option>
-          <option value="">Popular</option>
+          <option value="new">New Arrival</option>
+          <option value="popular">Popular</option>
         </select>
         <select
           name=""
