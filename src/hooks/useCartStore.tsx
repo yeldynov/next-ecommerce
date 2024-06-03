@@ -29,6 +29,7 @@ export const useCartStore = create<CartState>((set) => ({
         counter: cart?.lineItems.length || 0,
       });
     } catch (error) {
+      console.log(error);
       set((prev) => ({ ...prev, isLoading: false }));
     }
   },

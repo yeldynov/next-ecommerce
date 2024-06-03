@@ -4,6 +4,7 @@ import { useCartStore } from "@/hooks/useCartStore";
 import Image from "next/image";
 import { media as wixMedia } from "@wix/sdk";
 import { useWixClient } from "@/hooks/useWixClient";
+import { currentCart } from "@wix/ecom";
 
 const CartModal = () => {
   // TEMP
@@ -11,6 +12,29 @@ const CartModal = () => {
 
   const wixClient = useWixClient();
   const { cart, isLoading, removeItem } = useCartStore();
+
+  const handleCheckout = async () => {
+    try {
+      const checkout =
+        await wixClient.currentCart.createCheckoutFromCurrentCart({
+          channelType: currentCart.ChannelType.WEB,
+        });
+      const { redirectSession } =
+        await wixClient.redirects.createRedirectSession({
+          ecomCheckout: { checkoutId: checkout.checkoutId },
+          callbacks: {
+            postFlowUrl: window.location.origin,
+            thankYouPageUrl: `${window.location.origin}/success`,
+          },
+        });
+
+      if (redirectSession?.fullUrl) {
+        window.location.href = redirectSession.fullUrl;
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <div className="absolute right-0 top-12 z-20 flex w-max flex-col gap-6 rounded-md bg-white p-4 shadow-[0_3px_10px_rgb(0,0,0,0.2)]">
@@ -75,7 +99,8 @@ const CartModal = () => {
           <div className="">
             <div className="flex items-center justify-between font-semibold">
               <span>Subtotal</span>
-              <span>${cart.subtotal.amount}</span>
+              {/* <span>${cart.subtotal.amount}</span> */}
+              <span>$10</span>
             </div>
             <p className="mb-4 mt-2 text-sm text-gray-500">
               Shipping and taxes calculated at checkout.
@@ -87,6 +112,7 @@ const CartModal = () => {
               <button
                 className="rounded-md bg-black px-3 py-3 text-white disabled:cursor-not-allowed disabled:opacity-75"
                 disabled={isLoading}
+                onClick={handleCheckout}
               >
                 Checkout
               </button>
